@@ -1,0 +1,69 @@
+// examples/react/App.tsx
+import { PubFlow, PubFlowProvider, useAuth, useBridge } from 'pubflow/react';
+import { userSchema } from './schemas';
+
+// Initialize client
+const client = new PubFlow({
+  baseUrl: process.env.REACT_APP_API_URL
+});
+
+function UserList() {
+  const { data, loading, error, query } = useBridge('users', userSchema);
+  
+  useEffect(() => {
+    query({ limit: 10 });
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <ul>
+      {data.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+function LoginForm() {
+  const { login, loading } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login({ email, password });
+    } catch (err) {
+      console.error('Login failed:', err);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+      />
+      <button type="submit" disabled={loading}>
+        Login
+      </button>
+    </form>
+  );
+}
+
+function App() {
+  return (
+    <PubFlowProvider client={client}>
+      <LoginForm />
+      <UserList />
+    </PubFlowProvider>
+  );
+}

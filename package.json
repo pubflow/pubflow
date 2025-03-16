@@ -1,0 +1,42 @@
+{
+    "name": "pubflow",
+    "version": "0.1.0",
+    "description": "Framework agnostic client for PubFlow API services",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "scripts": {
+      "build": "tsup src/index.ts --format cjs,esm --dts",
+      "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+      "test": "jest",
+      "lint": "eslint src/**/*.ts"
+    },
+    "files": [
+      "dist"
+    ],
+    "keywords": [
+      "pubflow",
+      "api",
+      "client",
+      "framework-agnostic"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+      "zod": "^3.x"
+    },
+    "devDependencies": {
+      "@types/jest": "^29.x",
+      "@types/node": "^18.x",
+      "@typescript-eslint/eslint-plugin": "^5.x",
+      "@typescript-eslint/parser": "^5.x",
+      "eslint": "^8.x",
+      "jest": "^29.x",
+      "ts-jest": "^29.x",
+      "tsup": "^6.x",
+      "typescript": "^5.x"
+    },
+    "peerDependencies": {
+      "typescript": ">=4.0.0"
+    }
+  }
