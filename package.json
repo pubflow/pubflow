@@ -1,42 +1,60 @@
 {
-    "name": "pubflow",
-    "version": "0.1.0",
-    "description": "Framework agnostic client for PubFlow API services",
-    "main": "dist/index.js",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
-    "scripts": {
-      "build": "tsup src/index.ts --format cjs,esm --dts",
-      "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
-      "test": "jest",
-      "lint": "eslint src/**/*.ts"
+  "name": "pubflow",
+  "version": "0.1.0",
+  "description": "Framework agnostic API client for PubFlow services",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     },
-    "files": [
-      "dist"
-    ],
-    "keywords": [
-      "pubflow",
-      "api",
-      "client",
-      "framework-agnostic"
-    ],
-    "author": "",
-    "license": "MIT",
-    "dependencies": {
-      "zod": "^3.x"
+    "./react": "./dist/adapters/react/index.js",
+    "./next": "./dist/adapters/next/index.js",
+    "./react-native": "./dist/adapters/react-native/index.js",
+    "./svelte": "./dist/adapters/svelte/index.js",
+    "./html": "./dist/adapters/html/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "api",
+    "client",
+    "fetch",
+    "pubflow"
+  ],
+  "author": "PubFlow Inc.",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  },
+  "peerDependencies": {
+    "next": ">=12.0.0",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
+    "svelte": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
     },
-    "devDependencies": {
-      "@types/jest": "^29.x",
-      "@types/node": "^18.x",
-      "@typescript-eslint/eslint-plugin": "^5.x",
-      "@typescript-eslint/parser": "^5.x",
-      "eslint": "^8.x",
-      "jest": "^29.x",
-      "ts-jest": "^29.x",
-      "tsup": "^6.x",
-      "typescript": "^5.x"
+    "react-dom": {
+      "optional": true
     },
-    "peerDependencies": {
-      "typescript": ">=4.0.0"
+    "next": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
     }
   }
+}

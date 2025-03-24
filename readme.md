@@ -11,7 +11,7 @@
 
 ## Introduction
 
-PubFlow is a powerful, framework-agnostic API client library designed for modern web and mobile applications. It provides a seamless interface for handling authentication, data management, and real-time updates across different frameworks.
+PubFlow[beta] is a powerful, framework-agnostic API client library designed for modern web and mobile applications. It provides a seamless interface for handling authentication, data management, and real-time updates across different frameworks.
 
 ### Key Features
 
@@ -98,3 +98,4 @@ const user = await client.bridge.create('users', {
   name: 'New User'
 });
 Framework Adapters
+react > next > react-native > svelte > html

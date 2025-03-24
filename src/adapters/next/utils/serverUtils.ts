@@ -1,6 +1,7 @@
 // src/adapters/next/utils/serverUtils.ts
 import { GetServerSidePropsContext, GetServerSideProps } from 'next';
-import { PubFlow } from '../../../core/client';
+import { PubFlow } from '../../..';
+
 
 export interface ServerSideOptions {
   requireAuth?: boolean;

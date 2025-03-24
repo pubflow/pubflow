@@ -1,6 +1,7 @@
 // src/adapters/next/components/NextPubFlowProvider.tsx
 import { PubFlowProvider } from '../../react';
-import type { PubFlow } from '../../../core/client';
+import type { PubFlow } from '../../..';
+
 
 export interface NextPubFlowProviderProps {
   client: PubFlow;

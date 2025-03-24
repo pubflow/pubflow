@@ -2,8 +2,11 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { PubFlow } from '../../core/client';
+import { PubFlow } from '../..';
 import { SessionStorage } from '../../core/storage';
+import { PubFlowProvider } from '../react';
+import { useAuth } from '../react/hooks/useAuth';
+
 
 // Types
 export interface NextPubFlowConfig {
@@ -115,7 +118,7 @@ export function useNextAuth(options: {
   redirectTo?: string;
   redirectIfAuthenticated?: boolean;
 } = {}) {
-  const { session, loading, ...authUtils } = useAuth();
+  const { session, loading, ...authUtils } = useAuth(); // Make sure useAuth is properly imported
   const router = useRouter();
 
   useEffect(() => {
@@ -132,6 +135,7 @@ export function useNextAuth(options: {
 }
 
 // HOC for protecting pages
+// In the withNextAuth function
 export function withNextAuth<P extends object>(
   Component: React.ComponentType<P>,
   options: WithAuthProps = {}
@@ -150,7 +154,9 @@ export function withNextAuth<P extends object>(
       return null;
     }
 
-    if (options.userTypes && !client.auth.hasUserType(options.userTypes)) {
+    // This line uses 'client' which is not defined in this scope
+    // Should use the auth context instead
+    if (options.userTypes && !session.user.hasUserType(options.userTypes)) {
       router.push('/unauthorized');
       return null;
     }
