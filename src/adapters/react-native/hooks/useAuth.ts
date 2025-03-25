@@ -2,39 +2,34 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { usePubFlowContext } from '../components/PubFlowProvider';
+import { PubFlowSession } from '../../../types/core';
 
-export interface UseAuthOptions {
-  onSessionExpired?: () => void;
-  onUnauthorized?: () => void;
+interface LoginCredentials {
+  email?: string;
+  userName?: string;
+  password: string;
 }
 
-export function useAuth(options: UseAuthOptions = {}) {
+export function useAuth() {
   const { client, storage } = usePubFlowContext();
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [session, setSession] = useState<PubFlowSession | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
 
   const checkSession = useCallback(async () => {
     try {
       const savedSession = await storage.getSession();
       if (savedSession) {
-        const isValid = await client.auth.validateSession(savedSession.sessionId);
-        if (!isValid) {
-          await storage.clearSession();
-          setSession(null);
-          options.onSessionExpired?.();
-          return;
-        }
-        setSession(savedSession);
+        setSession(savedSession as PubFlowSession);
       }
     } catch (err) {
-      setError(err);
+      setError(err as Error);
     } finally {
       setLoading(false);
     }
   }, [client, storage]);
 
-  const login = useCallback(async (credentials) => {
+  const login = useCallback(async (credentials: LoginCredentials) => {
     try {
       setLoading(true);
       setError(null);
@@ -43,9 +38,10 @@ export function useAuth(options: UseAuthOptions = {}) {
       setSession(response);
       return response;
     } catch (err) {
-      setError(err);
-      Alert.alert('Error', err.message);
-      throw err;
+      const error = err as Error;
+      setError(error);
+      Alert.alert('Error', error.message || 'Login failed');
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -57,27 +53,25 @@ export function useAuth(options: UseAuthOptions = {}) {
       await storage.clearSession();
       setSession(null);
     } catch (err) {
-      setError(err);
-      Alert.alert('Error', err.message);
-      throw err;
+      const error = err as Error;
+      setError(error);
+      Alert.alert('Error', error.message || 'Logout failed');
+      throw error;
     }
   }, [client, storage]);
 
-  const isAuthorized = useCallback((roles?: string | string[]) => {
+  const isAuthorized = useCallback((userTypes?: string | string[]) => {
     if (!session) return false;
-    if (!roles) return true;
+    if (!userTypes) return true;
 
-    const userRoles = Array.isArray(session.user.roles) 
-      ? session.user.roles 
-      : [session.user.userType];
-    
-    const requiredRoles = Array.isArray(roles) ? roles : [roles];
-    return requiredRoles.some(role => userRoles.includes(role));
+    const userType = session.user.userType;
+    const requiredTypes = Array.isArray(userTypes) ? userTypes : [userTypes];
+    return requiredTypes.includes(userType);
   }, [session]);
 
   useEffect(() => {
     checkSession();
-  }, []);
+  }, [checkSession]);
 
   return {
     session,

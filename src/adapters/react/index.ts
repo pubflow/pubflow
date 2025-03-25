@@ -4,6 +4,7 @@ export * from './components/ErrorBoundary';
 export * from './components/Guards/AuthGuard';
 export * from './components/Guards/RoleGuard';
 export * from './hooks/useAuth';
+export * from './hooks/useBridge';
 export * from './hooks/useQuery';
 export * from './hooks/useResource';
 export * from './hoc/withAuth';

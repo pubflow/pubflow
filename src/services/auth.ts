@@ -1,4 +1,8 @@
 // src/services/auth.ts
+import { HttpClient } from '../core/http';
+import { StorageAdapter } from '../types/storage';
+import { PubFlowSession, PubFlowResponse } from '../types/core';
+import { AuthenticationError } from '../core/errors';
 export class AuthService {
     constructor(
       private http: HttpClient,
@@ -29,13 +33,24 @@ export class AuthService {
       return stored ? JSON.parse(stored) : null;
     }
   
-    async validateSession(): Promise<boolean> {
+    async validateSession(sessionId?: string): Promise<PubFlowSession | null> {
       try {
-        await this.http.request('/auth/validation');
-        return true;
+        const response = await this.http.request<PubFlowResponse<PubFlowSession>>('/auth/validation', {
+          method: 'POST',
+          body: sessionId ? { sessionId } : undefined
+        });
+        return response.success && response.data ? response.data : null;
       } catch {
-        return false;
+        return null;
       }
+    }
+
+    async hasUserType(userTypes: string | string[]): Promise<boolean> {
+      const session = await this.getSession();
+      if (!session) return false;
+      
+      const types = Array.isArray(userTypes) ? userTypes : [userTypes];
+      return types.includes(session.user.userType);
     }
   }
   

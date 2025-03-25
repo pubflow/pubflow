@@ -1,4 +1,5 @@
 // src/adapters/react/components/Guards/AuthGuard.tsx
+import { useEffect } from 'react';
 import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 

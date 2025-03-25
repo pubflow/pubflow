@@ -1,6 +1,9 @@
 // src/adapters/next/hoc/withNextAuth.tsx
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { useNextAuth } from '../hooks/useNextAuth';
+import React from 'react';
+
 
 export interface WithNextAuthOptions {
   userTypes?: string | string[];

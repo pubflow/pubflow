@@ -2,6 +2,7 @@
   "name": "pubflow",
   "version": "0.1.0",
   "description": "Framework agnostic API client for PubFlow services",
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/types/index.d.ts",
@@ -14,17 +15,27 @@
     ".": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.js",
+      "bun": "./dist/index.mjs",
+      "workerd": "./dist/index.mjs"
     },
     "./react": "./dist/adapters/react/index.js",
     "./next": "./dist/adapters/next/index.js",
     "./react-native": "./dist/adapters/react-native/index.js",
-    "./svelte": "./dist/adapters/svelte/index.js",
-    "./html": "./dist/adapters/html/index.js"
+    "./runtime": {
+      "types": "./dist/types/runtime/index.d.ts",
+      "import": "./dist/runtime/index.mjs",
+      "require": "./dist/runtime/index.js"
+    }
   },
   "scripts": {
-    "build": "tsc",
-    "prepare": "npm run build"
+    "build": "rollup -c rollup.config.js",
+    "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
+    "prepare": "npm run build",
+    "dev": "rollup -c rollup.config.js --watch",
+    "test:node": "node test/node.js",
+    "test:bun": "bun test/bun.js",
+    "test:cloudflare": "wrangler dev test/cloudflare.js"
   },
   "keywords": [
     "api",
@@ -33,15 +44,28 @@
     "pubflow"
   ],
   "author": "PubFlow Inc.",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "devDependencies": {
+    "@rollup/plugin-json": "^6.1.0",
+    "@types/node": "^18.15.0",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@types/react-native": "^0.71.3",
+    "next": "^12.3.4",
+    "rollup": "^4.37.0",
+    "rollup-plugin-dts": "^6.2.1",
+    "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^5.8.2"
   },
   "peerDependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.2",
+    "expo-constants": "^17.0.8",
+    "expo-device": "^7.0.2",
     "next": ">=12.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",
-    "svelte": ">=3.0.0"
+    "react-native": ">=0.60.0",
+    "react-router-dom": "^7.4.0"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -53,8 +77,24 @@
     "next": {
       "optional": true
     },
-    "svelte": {
+    "react-native": {
+      "optional": true
+    },
+    "react-router-dom": {
+      "optional": true
+    },
+    "@react-native-async-storage/async-storage": {
+      "optional": true
+    },
+    "expo-constants": {
+      "optional": true
+    },
+    "expo-device": {
       "optional": true
     }
+  },
+  "dependencies": {
+    "expo-secure-store": "^14.0.1",
+    "zod": "^3.24.2"
   }
 }

@@ -40,14 +40,17 @@ export function useBridge<T>(
         limit: options.pageSize || 10
       });
 
-      setData(response.data);
+      const responseData = response.data || [];
+      const responseMeta = response.meta || { page: 1, hasMore: false, totalPages: 1 };
+
+      setData(responseData);
       setPagination({
-        page: response.meta.page || 1,
-        hasMore: response.meta.hasMore || false,
-        totalPages: response.meta.totalPages || 1
+        page: responseMeta.page || 1,
+        hasMore: responseMeta.hasMore || false,
+        totalPages: responseMeta.totalPages || 1
       });
 
-      options.onSuccess?.(response.data);
+      options.onSuccess?.(responseData);
       return response;
     } catch (err) {
       setError(err);
@@ -79,11 +82,14 @@ export function useBridge<T>(
         limit: options.pageSize || 10
       });
 
-      setData(prev => [...prev, ...response.data]);
+      const responseData = response.data || [];
+      const responseMeta = response.meta || { page: 1, hasMore: false, totalPages: 1 };
+
+      setData(prev => [...prev, ...responseData]);
       setPagination({
         page: nextPage,
-        hasMore: response.meta.hasMore || false,
-        totalPages: response.meta.totalPages || 1
+        hasMore: responseMeta.hasMore || false,
+        totalPages: responseMeta.totalPages || 1
       });
     } catch (err) {
       options.onError?.(err);

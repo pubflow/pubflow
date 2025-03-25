@@ -1,4 +1,6 @@
-// src/services/bridge.ts
+import { HttpClient } from '../core/http';
+import { PubFlowResponse } from '../types/core';
+
 export class BridgeService {
     constructor(private http: HttpClient) {}
   

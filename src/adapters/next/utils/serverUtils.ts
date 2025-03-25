@@ -11,7 +11,7 @@ export interface ServerSideOptions {
 
 export function createServerSideClient(context: GetServerSidePropsContext) {
   return new PubFlow({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL!,
+    baseUrl: typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_API_URL! : '',
     headers: {
       cookie: context.req.headers.cookie || '',
       'x-session-id': context.req.cookies['sessionId'] || ''

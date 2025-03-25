@@ -1,6 +1,6 @@
 // src/adapters/react-native/components/BridgeView.tsx
 import React from 'react';
-import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, Text, StyleSheet, ViewStyle } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 
 interface BridgeViewProps {

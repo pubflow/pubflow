@@ -1,5 +1,10 @@
 // src/adapters/react/types.ts
-import type { PubFlow, BridgeSchema, QueryBuilder, PaginatedResponse } from '../../core/types';
+import type { PubFlowResponse } from '../../types/core';
+import type { PubFlow } from '../..';
+import type { BridgeSchema } from '../../core/schema';
+
+// Define PaginatedResponse as an alias for PubFlowResponse with array data
+type PaginatedResponse<T> = PubFlowResponse<T[]>;
 
 export interface UseBridgeOptions<T> {
   schema?: BridgeSchema;
@@ -33,4 +38,3 @@ export interface UseBridgeResult<T> {
     update: (ids: string[], data: Partial<T>) => Promise<void>;
   };
 }
-

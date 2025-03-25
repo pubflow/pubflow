@@ -1,5 +1,6 @@
 // src/adapters/next/hooks/useNextAuth.ts
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { useAuth } from '../../react';
 
 export interface UseNextAuthOptions {

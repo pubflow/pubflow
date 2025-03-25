@@ -2,6 +2,13 @@
 import { useQuery } from '../../react';
 import { useRouter } from 'next/router';
 
+interface UseQueryOptions {
+  initialData?: any;
+  onSuccess?: (data: any) => void;
+  onError?: (error: any) => void;
+  cacheTime?: number;
+}
+
 export function useNextQuery<T>(
   queryFn: () => Promise<T>,
   options: UseQueryOptions = {}
@@ -10,7 +17,7 @@ export function useNextQuery<T>(
   
   return useQuery<T>(queryFn, {
     ...options,
-    onError: (error) => {
+    onError: (error: any) => {
       if (error?.status === 401) {
         router.push('/login');
       }

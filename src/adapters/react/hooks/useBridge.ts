@@ -2,6 +2,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { usePubFlowContext } from '../components/PubFlowProvider';
 import type { BridgeSchema } from '../../../core/schema';
+import type { PubFlowResponse } from '../../../types/core';
+
+// Base interface to ensure T has an id property
+export interface WithId {
+  id: string;
+}
 
 export interface UseBridgeOptions<T> {
   schema?: BridgeSchema;
@@ -13,7 +19,7 @@ export interface UseBridgeOptions<T> {
   defaultParams?: Record<string, any>;
 }
 
-export function useBridge<T>(
+export function useBridge<T extends WithId>(
   resourceName: string,
   options: UseBridgeOptions<T> = {}
 ) {
@@ -40,14 +46,15 @@ export function useBridge<T>(
         limit: options.pageSize || 10
       });
 
-      setData(response.data);
+      // Ensure data is an array even if undefined
+      setData(response.data ?? []);
       setPagination({
-        page: response.meta.page || 1,
-        hasMore: response.meta.hasMore || false,
-        totalPages: response.meta.totalPages || 1
+        page: response.meta?.page || 1,
+        hasMore: response.meta?.hasMore || false,
+        totalPages: response.meta?.totalPages || 1
       });
 
-      if (options.onSuccess) {
+      if (options.onSuccess && response.data) {
         options.onSuccess(response.data);
       }
 
@@ -69,7 +76,8 @@ export function useBridge<T>(
         options.schema.validate(data);
       }
       const response = await client.bridge.create<T>(resourceName, data);
-      setData(prev => [...prev, response]);
+      // Type assertion to ensure response is treated as T
+      setData(prev => [...prev, response as unknown as T]);
       return response;
     } catch (err) {
       if (options.onError) {
@@ -85,7 +93,8 @@ export function useBridge<T>(
         options.schema.validate(data);
       }
       const response = await client.bridge.update<T>(resourceName, id, data);
-      setData(prev => prev.map(item => item.id === id ? response : item));
+      // Type assertion to ensure response is treated as T
+      setData(prev => prev.map(item => item.id === id ? response as unknown as T : item));
       return response;
     } catch (err) {
       if (options.onError) {
@@ -113,7 +122,8 @@ export function useBridge<T>(
     
     setPagination(prev => ({ ...prev, page: prev.page + 1 }));
     const response = await query();
-    setData(prev => [...prev, ...response.data]);
+    // Ensure data is an array even if undefined
+    setData(prev => [...prev, ...(response.data ?? [])]);
   }, [pagination.hasMore, loading, query]);
 
   const refresh = useCallback(async () => {
@@ -143,9 +153,16 @@ export function useBridge<T>(
         const results = await Promise.all(
           ids.map(id => client.bridge.update<T>(resourceName, id, updateData))
         );
-        setData(prev => {
-          const updated = new Map(results.map(item => [item.id, item]));
-          return prev.map(item => updated.get(item.id) || item);
+        setData((prev: T[]) => {
+          // Create a map of id to item for quick lookup
+          const updated = new Map(results.map((response: PubFlowResponse<T>) => {
+            const item = response.data as T;
+            return [item.id, item];
+          }));
+          return prev.map((item: T) => {
+            const updatedItem = updated.get(item.id);
+            return updatedItem || item;
+          }) as T[];
         });
         return results;
       } catch (err) {

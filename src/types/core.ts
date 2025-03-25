@@ -4,6 +4,7 @@ export interface PubFlowConfig {
     storage?: Storage;
     debug?: boolean;
     defaultHeaders?: Record<string, string>;
+    headers?: Record<string, string>;
     scheduledTaskSecret?: string;
 }
 
@@ -33,5 +34,6 @@ export interface PubFlowResponse<T = any> {
         hasMore?: boolean;
         timestamp?: string;
         query?: string;
+        totalPages?: number;
     }
 }

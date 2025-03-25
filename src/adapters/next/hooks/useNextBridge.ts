@@ -1,15 +1,17 @@
 // src/adapters/next/hooks/useNextBridge.ts
-import { useBridge } from '../../react';
+import { useCallback } from 'react';
+import { useBridge, WithId } from '../../react';
 import { useRouter } from 'next/router';
+import type { UseBridgeOptions } from '../../../types/adapters';
 
-export function useNextBridge<T>(
+export function useNextBridge<T extends WithId>(
   resourceName: string,
   options: UseBridgeOptions<T> = {}
 ) {
   const router = useRouter();
   const bridge = useBridge<T>(resourceName, {
     ...options,
-    onError: (error) => {
+    onError: (error: any) => {
       if (error?.status === 401) {
         router.push('/login');
       }

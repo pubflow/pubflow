@@ -1,26 +1,37 @@
 // src/core/auth.ts
+import { HttpClient } from './http';
+import { AuthResponse } from '../types/auth';
+import { SessionStorage } from './storage';
+import type { StorageAdapter } from '../types/storage';
+
 export class AuthService {
-    constructor(private client: PubFlow) {}
+    constructor(
+      private http: HttpClient,
+      private storage: StorageAdapter
+    ) {}
   
     async login(credentials: { email: string; password: string }): Promise<AuthResponse> {
-      const response = await this.client.http.post<AuthResponse>('/auth/login', credentials);
+      const response = await this.http.request<AuthResponse>('/auth/login', {
+        method: 'POST',
+        body: credentials
+      });
       if (response.success) {
-        SessionStorage.save(response);
+        await SessionStorage.save(response);
       }
       return response;
     }
   
     async logout() {
-      await this.client.http.post('/auth/logout');
-      SessionStorage.clear();
+      await this.http.request('/auth/logout', { method: 'POST' });
+      await SessionStorage.clear();
     }
   
-    getSession(): AuthResponse | null {
+    async getSession(): Promise<AuthResponse | null> {
       return SessionStorage.get();
     }
   
-    hasUserType(requiredTypes?: string | string[]): boolean {
-      const session = this.getSession();
+    async hasUserType(requiredTypes?: string | string[]): Promise<boolean> {
+      const session = await this.getSession();
       if (!session) return false;
       
       if (!requiredTypes) return true;

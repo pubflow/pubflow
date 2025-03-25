@@ -44,36 +44,3 @@ export interface RNStorageAdapter {
     setItem(key: string, value: string): Promise<void>;
     removeItem(key: string): Promise<void>;
 }
-
-// Svelte specific types
-export interface SvelteStore<T> {
-    subscribe: (run: (value: T) => void) => () => void;
-    set?: (value: T) => void;
-    update?: (updater: (value: T) => T) => void;
-}
-
-export interface SvelteBridgeStore<T> extends SvelteStore<{
-    data: T[];
-    loading: boolean;
-    error: any;
-    pagination: {
-        page: number;
-        hasMore: boolean;
-    };
-}> {
-    query: (params?: any) => Promise<void>;
-    create: (data: Partial<T>) => Promise<T>;
-    update: (id: string, data: Partial<T>) => Promise<T>;
-    remove: (id: string) => Promise<void>;
-}
-
-// HTMX/HTML specific types
-export interface HtmlAdapterConfig {
-    templates: Record<string, (data: any) => string>;
-    errorHandler?: (error: any) => void;
-    loadingIndicator?: string | HTMLElement;
-}
-
-// src/types/index.ts
-export * from './core';
-export * from './adapters';

@@ -1,6 +1,6 @@
 // src/adapters/react-native/components/PubFlowProvider.tsx
 import React, { createContext, useContext } from 'react';
-import type { PubFlow } from '../../../core/client';
+import type { PubFlow } from '../../..';
 import { NativeStorage } from '../utils/storage';
 import type { ViewStyle } from 'react-native';
 
@@ -35,9 +35,13 @@ export function PubFlowProvider({
   React.useEffect(() => {
     if (options.autoLogin) {
       storage.getSession()
-        .then((session) => {
-          if (session) {
-            client.auth.restoreSession(session);
+        .then((sessionData) => {
+          if (sessionData) {
+            // Instead of using a non-existent restoreSession method,
+            // we'll use the session data directly
+            // The session will be available through the storage
+            // and the auth service can access it with getSession()
+            return client.auth.validateSession();
           }
         })
         .catch((err) => {

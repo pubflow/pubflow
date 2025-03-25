@@ -1,4 +1,8 @@
 // src/core/http.ts
+import { runtime } from '../runtime';
+import { PubFlowError } from './errors';
+import type { FetchOptions } from '../runtime/types';
+
 export class HttpClient {
     constructor(
       private baseUrl: string,
@@ -12,13 +16,15 @@ export class HttpClient {
         headers?: Record<string, string>;
         body?: any;
         params?: Record<string, any>;
+        timeout?: number;
       } = {}
     ): Promise<T> {
       const {
         method = 'GET',
         headers = {},
         body,
-        params
+        params,
+        timeout
       } = options;
   
       let url = `${this.baseUrl}${endpoint}`;
@@ -33,8 +39,9 @@ export class HttpClient {
         });
         url += `?${searchParams.toString()}`;
       }
-  
-      const response = await fetch(url, {
+      
+      // Use the runtime adapter for fetch operations
+      const fetchOptions: FetchOptions = {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -42,8 +49,11 @@ export class HttpClient {
           ...headers
         },
         body: body ? JSON.stringify(body) : undefined,
-        credentials: 'include'
-      });
+        credentials: 'include',
+        timeout
+      };
+      
+      const response = await runtime.fetch(url, fetchOptions);
   
       const data = await response.json();
   

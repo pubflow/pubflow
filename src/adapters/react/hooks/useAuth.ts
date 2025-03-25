@@ -1,14 +1,16 @@
 // src/adapters/react/hooks/useAuth.ts
 import { useState, useEffect, useCallback } from 'react';
 import { usePubFlowContext } from '../components/PubFlowProvider';
+import { PubFlowSession } from '../../../types/core';
+import { AuthResponse } from '../../../types/auth';
 
 export function useAuth() {
   const { client, storage } = usePubFlowContext();
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<PubFlowSession | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
 
-  const login = useCallback(async (credentials) => {
+  const login = useCallback(async (credentials: { email: string; password: string }) => {
     try {
       setLoading(true);
       const response = await client.auth.login(credentials);
@@ -16,7 +18,7 @@ export function useAuth() {
       storage.setSession(response);
       return response;
     } catch (err) {
-      setError(err);
+      setError(err as Error);
       throw err;
     } finally {
       setLoading(false);
@@ -29,7 +31,7 @@ export function useAuth() {
       setSession(null);
       storage.clearSession();
     } catch (err) {
-      setError(err);
+      setError(err as Error);
       throw err;
     }
   }, [client, storage]);
@@ -38,21 +40,20 @@ export function useAuth() {
     if (!session) return false;
     if (!roles) return true;
 
-    const userRoles = Array.isArray(session.user.roles) 
-      ? session.user.roles 
-      : [session.user.userType];
+    // Use userType since roles doesn't exist on PubFlowUser
+    const userType = session.user.userType;
     
     const requiredRoles = Array.isArray(roles) ? roles : [roles];
-    return requiredRoles.some(role => userRoles.includes(role));
+    return requiredRoles.includes(userType);
   }, [session]);
 
   useEffect(() => {
     const savedSession = storage.getSession();
     if (savedSession) {
-      setSession(savedSession);
+      setSession(savedSession as PubFlowSession);
     }
     setLoading(false);
-  }, []);
+  }, [storage]);
 
   return {
     session,

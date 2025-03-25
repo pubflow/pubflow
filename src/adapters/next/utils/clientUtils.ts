@@ -1,5 +1,6 @@
 // src/adapters/next/utils/clientUtils.ts
 import { useRouter } from 'next/router';
+import { useCallback } from 'react';
 
 export function createQueryString(params: Record<string, any>): string {
   const searchParams = new URLSearchParams();
@@ -15,10 +16,14 @@ export function createQueryString(params: Record<string, any>): string {
   return searchParams.toString();
 }
 
-export function parseQueryParams(query: Record<string, string | string[]>) {
+export function parseQueryParams(query: Record<string, string | string[] | undefined>) {
   const params: Record<string, any> = {};
   
   Object.entries(query).forEach(([key, value]) => {
+    if (value === undefined) {
+      return; // Skip undefined values
+    }
+    
     if (key.endsWith('[]')) {
       const baseKey = key.slice(0, -2);
       params[baseKey] = Array.isArray(value) ? value : [value];

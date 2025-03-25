@@ -1,4 +1,4 @@
-// src/adapters/next/components/NextPubFlowProvider.tsx
+import React from 'react';
 import { PubFlowProvider } from '../../react';
 import type { PubFlow } from '../../..';
 
@@ -24,7 +24,7 @@ export function NextPubFlowProvider({
     <PubFlowProvider
       client={client}
       options={{
-        storage: typeof window !== 'undefined' ? window.localStorage : null,
+        storage: typeof window !== 'undefined' ? window.localStorage : undefined,
         ...options
       }}
     >

@@ -12,4 +12,5 @@ export * from './hoc/withBridge';
 export * from './utils/storage';
 export * from './utils/validation';
 export * from './utils/expo';
+export * from './utils/storageAdapter';
 export * from './expo';

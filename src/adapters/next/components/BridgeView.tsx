@@ -1,4 +1,4 @@
-// src/adapters/next/components/BridgeView.tsx
+import React from 'react';
 import { useRouter } from 'next/router';
 import { useNextAuth } from '../hooks/useNextAuth';
 

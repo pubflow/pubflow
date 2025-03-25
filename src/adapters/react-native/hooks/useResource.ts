@@ -18,7 +18,7 @@ export function useResource<T = any>(
 
   const resource = useMemo(() => ({
     get: async (id?: string) => {
-      const response = await client.bridge.query(resourcePath, id);
+      const response = await client.bridge.query(resourcePath, id ? { include: [id] } : undefined);
       return options.transform ? options.transform(response) : response;
     },
     create: (data: Partial<T>) => client.bridge.create(resourcePath, data),
