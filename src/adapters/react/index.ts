@@ -1,4 +1,5 @@
 // src/adapters/react/index.ts
+export { PubFlowProvider } from './components/PubFlowProvider';
 export * from './components/PubFlowProvider';
 export * from './components/ErrorBoundary';
 export * from './components/Guards/AuthGuard';

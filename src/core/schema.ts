@@ -42,7 +42,7 @@ export class BridgeSchema {
     });
   }
 }
-
+/*
 // Example schema usage
 export const userSchema = new BridgeSchema({
   name: 'user',
@@ -54,4 +54,4 @@ export const userSchema = new BridgeSchema({
   },
   timestamps: true,
   softDelete: true
-});
+}); */

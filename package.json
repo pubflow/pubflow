@@ -1,6 +1,6 @@
 {
   "name": "pubflow",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Framework agnostic API client for PubFlow services",
   "type": "module",
   "main": "dist/index.js",
